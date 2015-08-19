@@ -1,7 +1,15 @@
 # -*- coding: utf-8 -*-
 ## @package som_cm.datasets.google_image
 #
-#  Google image datasets.
+#  Image datasets via Google Image API.
+#  createDatasets function will create datasets
+#  with the following direcotry structure.
+#
+#  * datasets
+#    - apple
+#      - apple_1.jpg
+#    - banana
+#      - banana_1.jpg
 #
 #  @author      tody
 #  @date        2015/08/15
@@ -20,11 +28,13 @@ from som_cm.io_util.image import loadRGB, saveRGB
 _root_dir = os.path.dirname(__file__)
 
 
+## Data directory for the given data_name.
 def dataDir(data_name):
     data_dir = os.path.join(_root_dir, data_name)
     return data_dir
 
 
+## Data file path list for the given data_name.
 def dataFiles(data_name):
     data_dir = dataDir(data_name)
     data_files = []
@@ -37,18 +47,19 @@ def dataFiles(data_name):
     return data_files
 
 
-def dataFile(data_name, i):
+## Data file path for the given data_name and data_id.
+def dataFile(data_name, data_id):
     data_files = dataFiles(data_name)
 
-    if i >= len(data_files):
+    if data_id >= len(data_files):
         return None
 
-    data_file = data_files[i]
+    data_file = data_files[data_id]
     return data_file
 
 
-def loadData(data_name, i):
-    data_file = dataFile(data_name, i)
+def loadData(data_name, data_id):
+    data_file = dataFile(data_name, data_id)
 
     if data_file is None:
         return None
@@ -93,7 +104,6 @@ class GoogleImageLoader:
     def downloadImages(self):
         print "  Download"
         data_name = self._keyword
-        num_images = self._num_images
         image_urls = self._image_urls
         data_dir = self._data_dir
         if os.path.exists(data_dir) == False:
@@ -149,10 +159,12 @@ class GoogleImageLoader:
             print "  - Resized: %s" % data_filename
 
 
+## Create dataset for the given data_name.
 def createDataset(data_name="banana", num_images=10, update=False):
     GoogleImageLoader(data_name, num_images, update)
 
 
+## Create datasets for the given data_names.
 def createDatasets(data_names=["apple", "banana", "sky", "tulip", "flower"],
                    num_images=10,
                    update=False):
@@ -163,4 +175,3 @@ def createDatasets(data_names=["apple", "banana", "sky", "tulip", "flower"],
 
 if __name__ == '__main__':
     createDatasets()
-    #testLoad(data_name="banana", i=1)

@@ -22,6 +22,7 @@ from som_cm.plot.window import showMaximize
 _root_dir = os.path.dirname(__file__)
 
 
+## Result directory for SOM results.
 def resultDir():
     result_dir = os.path.abspath(os.path.join(_root_dir, "../../results"))
     if not os.path.exists(result_dir):
@@ -218,14 +219,17 @@ class SOMPlot:
         plot3d = ax.scatter(colors[:, 0], colors[:, 1], colors[:, 2],
                     color=colors)
 
+        ax.set_xlabel('R', x=10, y=10)
+        ax.set_ylabel('G')
+        ax.set_zlabel('B')
 
         ax.set_zlim3d([0.0, 1.0])
         ax.set_ylim3d([0.0, 1.0])
         ax.set_xlim3d([0.0, 1.0])
 
-        ax.set_xticks(np.linspace(0.2, 0.8, 4))
-        ax.set_yticks(np.linspace(0.2, 0.8, 4))
-        ax.set_zticks(np.linspace(0.2, 0.8, 4))
+        ax.set_xticks(np.linspace(0.2, 0.8, 2))
+        ax.set_yticks(np.linspace(0.2, 0.8, 2))
+        ax.set_zticks(np.linspace(0.2, 0.8, 2))
         return plot3d
 
     ## Animation function for FuncAnimation.
