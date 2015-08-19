@@ -19,7 +19,13 @@ from som_cm.cv.image import to32F
 from som_cm.core.color_samples import Hist3D
 from som_cm.plot.window import showMaximize
 
-_result_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../results"))
+_root_dir = os.path.dirname(__file__)
+
+
+def resultDir():
+    result_dir = os.path.abspath(os.path.join(_root_dir, "../../results"))
+    if not os.path.exists(result_dir):
+        os.makedirs(result_dir)
 
 ## SOM parameter.
 class SOMParam:
@@ -308,7 +314,7 @@ def runSOMResult(image_name, C_32F, som1D, som2D):
     plt.title("2D in 3D")
     som2D_plot.plot3D(ax2D)
 
-    plt.savefig(os.path.join(_result_dir, image_name + ".png"))
+    plt.savefig(os.path.join(resultDir(), image_name + ".png"))
     #showMaximize()
 
 
