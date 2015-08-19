@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-## @package som_cm.io.image
+## @package som_cm.io_util.image
 #
 #  Image IO utility package.
 #  @author      tody

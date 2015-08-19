@@ -7,10 +7,12 @@ Simple python demos of Data-driven Color Manifolds [Nguyen et al. 2015].
 They used self-organizing maps (**SOM**) to construct data-driven **color manifolds**.
 
 ## Result
+This program can generate color manifolds for the target images.
 ![apple_0](results/apple_0.png)
 ![banana_0](results/banana_0.png)
+![flower_0](results/flower_0.png)
 ![tulip_1](results/tulip_1.png)
-![sky_13](results/sky_13.png)
+![sky_2](results/sky_2.png)
 
 ## Installation
 
@@ -35,15 +37,26 @@ This program also uses **docopt** for CLI.
 ### Install main modules
 *Status*: Under construction.
 
-<!-- You can use **pip** command for installing main modules.
+You can use **pip** command for installing main modules.
 Please run the following command from the shell.
 
 ``` bash
   > pip install git+https://github.com/tody411/SOM-ColorManifolds.git
-``` -->
+```
 
 ## Usage
-*Status*: Under construction.
+### Package Structure
+* som_cm: Main package.
+    - main.py: Main module for testing.
+* results: Result images will be saved in the directory.
+
+### Test SOM Demo
+You can test the SOM with the following command.
+``` bash
+  > python main.py
+```
+
+This command will start downloading images via Google Image API then run the SOM module to generate result images.
 
 <!-- ## API Document
 

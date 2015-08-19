@@ -10,11 +10,12 @@
 import json
 import os
 import urllib2
+import httplib2
 
 import cv2
 import matplotlib.pyplot as plt
 
-from som_cm.io.image import loadRGBA, loadRGB, saveRGB
+from som_cm.io_util.image import loadRGB, saveRGB
 
 _root_dir = os.path.dirname(__file__)
 
@@ -55,68 +56,111 @@ def loadData(data_name, i):
     return loadRGB(data_file)
 
 
-def searchImages(keyword, num_images):
+## Simple image loaders via Google image API.
+class GoogleImageLoader:
+    ## Constructor
+    #  @param keyword     keyword for image search.
+    #  @param num_images  target number of images for the search.
+    #  @param update      Update existing images if the value is True.
+    def __init__(self, keyword="banana", num_images=10, update=False):
+        self._keyword = keyword
+        self._num_images = num_images
+        self._data_dir = dataDir(keyword)
+        self._update = update
 
-    url_list = []
-    url = "http://ajax.googleapis.com/ajax/services/search/images?q={0}&v=1.0&rsz=large&start={1}"
+        self.searchImageURLs()
+        self.downloadImages()
+        self.postResize()
 
-    for i in range((num_images / 8) + 1):
-        res = urllib2.urlopen(url.format(keyword, i * 8))
-        data = json.load(res)
-        url_list += [result["url"] for result in data["responseData"]["results"]]
+    def searchImageURLs(self):
+        keyword = self._keyword
+        num_images = self._num_images
 
-    return url_list
+        image_urls = []
+        google_api = "http://ajax.googleapis.com/ajax/services/search/images?q={0}&v=1.0&rsz=large&start={1}&imgc=color"
+
+        for i in range((num_images / 8) + 1):
+            res = urllib2.urlopen(google_api.format(keyword, i * 8))
+            page_data = json.load(res)
+            page_urls = [result["url"] for result in page_data["responseData"]["results"]]
+            image_urls.extend(page_urls)
+
+        if len(image_urls) >= num_images:
+            image_urls = image_urls[:num_images]
+        self._image_urls = image_urls
+        return image_urls
+
+    def downloadImages(self):
+        print "  Download"
+        data_name = self._keyword
+        num_images = self._num_images
+        image_urls = self._image_urls
+        data_dir = self._data_dir
+        if os.path.exists(data_dir) == False:
+            os.makedirs(data_dir)
+
+        http = httplib2.Http(".cache")
+
+        for i in range(len(set(image_urls))):
+            try:
+                url_name, ext = os.path.splitext(image_urls[i])
+
+                data_filename = "%s_%s%s" % (data_name, i, ext)
+                data_filepath = os.path.join(data_dir, data_filename)
+
+                if not self._update:
+                    if os.path.exists(data_filepath):
+                        print "  - Skip: %s" % data_filename
+                        continue
+
+                response, content = http.request(image_urls[i])
+
+                with open(data_filepath, 'wb') as data_file:
+                    data_file.write(content)
+
+                    print "  - Done: %s" % data_filename
+            except:
+                continue
+
+    def postResize(self):
+        print "  Post resize"
+        data_name = self._keyword
+        data_files = dataFiles(data_name)
+
+        for data_file in data_files:
+            data_filename = os.path.basename(data_file)
+            C_8U = loadRGB(data_file)
+
+            if C_8U is None:
+                os.remove(data_file)
+                print "  - Delete: %s" % data_filename
+                continue
+            h, w = C_8U.shape[0:2]
+
+            opt_scale = 800.0 / float(h)
+            opt_scale = max(opt_scale, 800.0 / float(w))
+            opt_scale = min(opt_scale, 1.0)
+
+            h_opt = int(opt_scale * h)
+            w_opt = int(opt_scale * w)
+
+            C_8U_small = cv2.resize(C_8U, (w_opt, h_opt))
+            saveRGB(data_file, C_8U_small)
+            print "  - Resized: %s" % data_filename
 
 
-def downloadImages(data_name, num_images):
-    url_list = searchImages(data_name, num_images)
-    data_dir = os.path.join(_root_dir, data_name)
-    if os.path.exists(data_dir) == False:
-        os.makedirs(data_dir)
-
-    opener = urllib2.build_opener()
-
-    for i in range(len(set(url_list))):
-        try:
-            fn, ext = os.path.splitext(url_list[i])
-            req = urllib2.Request(url_list[i], headers={"User-Agent": "Magic Browser"})
-            data_file = open(os.path.join(data_dir, "%s_%s%s" % (data_name, i, ext)), "wb")
-            data_file.write(opener.open(req).read())
-            data_file.close()
-            print("Downloaded:"+str(i+1))
-        except:
-            continue
-
-def resizeImages(data_name):
-    data_files = dataFiles(data_name)
-
-    for data_file in dataFiles(data_name):
-        C_8U = loadRGB(data_file)
-        if C_8U is None:
-            os.remove(data_file)
-            continue
-        h, w = C_8U.shape[0:2]
-        print h, w
-        opt_scale = 800.0 / float(h)
-        opt_scale = max(opt_scale, 800.0 / float(w))
-        print opt_scale
-
-        h_opt = int(opt_scale * h)
-        w_opt = int(opt_scale * w)
-
-        C_8U_small = cv2.resize(C_8U, (w_opt, h_opt))
-        saveRGB(data_file, C_8U_small)
-
-def testLoad(data_name="banana", i=0):
-    C_8U = loadData(data_name, i)
-    plt.imshow(C_8U)
-    plt.show()
+def createDataset(data_name="banana", num_images=10, update=False):
+    GoogleImageLoader(data_name, num_images, update)
 
 
-def testDownload(keyword="banana", num_images=16):
-    downloadImages(keyword, num_images)
+def createDatasets(data_names=["apple", "banana", "sky", "tulip", "flower"],
+                   num_images=10,
+                   update=False):
+    for data_name in data_names:
+        print "Create datasets: %s" % data_name
+        createDataset(data_name, num_images, update)
+
 
 if __name__ == '__main__':
-    testDownload("tulip")
-    resizeImages("tulip")
+    createDatasets()
     #testLoad(data_name="banana", i=1)

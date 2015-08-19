@@ -12,7 +12,7 @@ from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 import cv2
-from som_cm.io.image import loadRGB
+from som_cm.io_util.image import loadRGB
 from som_cm.np.norm import normVectors
 from som_cm.datasets.google_image import loadData, dataFile
 from som_cm.cv.image import to32F
@@ -282,7 +282,10 @@ def runSOMResult(image_name, C_32F, som1D, som2D):
     plt.imshow(C_32F)
     plt.axis('off')
 
+    print "  - Train 1D"
     som1D.trainAll()
+
+    print "  - Train 2D"
     som2D.trainAll()
 
     som1D_plot = SOMPlot(som1D)
@@ -309,14 +312,19 @@ def runSOMResult(image_name, C_32F, som1D, som2D):
     #showMaximize()
 
 
-if __name__ == '__main__':
-    data_names = ["apple", "banana", "tulip", "sky"]
-    data_ids = [0, 1, 2]
-
+def runSOMResults(data_names, data_ids):
     for data_name in data_names:
+        print "SOM: %s" % data_name
         for data_id in data_ids:
+            print "Data ID: %s" % data_id
             image_file = dataFile(data_name, data_id)
             image_name = os.path.basename(image_file)
             image_name = os.path.splitext(image_name)[0]
             C_32F, som1D, som2D = setupSOM(image_file)
             runSOMResult(image_name, C_32F, som1D, som2D)
+
+if __name__ == '__main__':
+    data_names = ["apple", "banana", "tulip", "sky", "flower"]
+    data_ids = [0, 1, 2]
+
+    runSOMResults(data_names, data_ids)
