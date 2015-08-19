@@ -7,7 +7,10 @@ Simple python demos of Data-driven Color Manifolds [Nguyen et al. 2015].
 They used self-organizing maps (**SOM**) to construct data-driven **color manifolds**.
 
 ## Result
-*Status*: Under construction.
+![apple_0](results/apple_0.png)
+![banana_0](results/banana_0.png)
+![tulip_1](results/tulip_1.png)
+![sky_13](results/sky_13.png)
 
 ## Installation
 
@@ -55,8 +58,7 @@ For a local copy, please use the following doxygen command from *doxygen* direct
 
 ## Future tasks
 
-* [ ] Complete implementation.
-* [ ] Update result section.
+* [ ] Support batch usage via docutil.
 
 ## License
 

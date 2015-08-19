@@ -18,13 +18,11 @@ from som_cm.datasets.google_image import loadData
 class Hist3D:
     ## Constructor
     #  @param image          input image.
-    #  @param color_space    target color space.
     #  @param num_bins       target number of histogram bins.
     #  @param alpha          low density clip.
-    def __init__(self, image, color_space="rgb",
+    def __init__(self, image,
                  num_bins=16, alpha=0.3):
         self._pixels = self.toPixels(image)
-        self._color_space = color_space
         self._num_bins = num_bins
         self._alpha = alpha
 

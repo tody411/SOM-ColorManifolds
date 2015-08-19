@@ -28,18 +28,29 @@ def dataFiles(data_name):
     data_dir = dataDir(data_name)
     data_files = []
     for data_name in os.listdir(data_dir):
+        data_file = os.path.join(data_dir, data_name)
         if ".png" in data_name or ".jpg" in data_name:
-            data_files.append(os.path.join(data_dir, data_name))
+            data_files.append(data_file)
+        else:
+            os.remove(data_file)
     return data_files
 
 
-def loadData(data_name, i):
+def dataFile(data_name, i):
     data_files = dataFiles(data_name)
 
     if i >= len(data_files):
         return None
 
     data_file = data_files[i]
+    return data_file
+
+
+def loadData(data_name, i):
+    data_file = dataFile(data_name, i)
+
+    if data_file is None:
+        return None
 
     return loadRGB(data_file)
 
@@ -106,6 +117,6 @@ def testDownload(keyword="banana", num_images=16):
     downloadImages(keyword, num_images)
 
 if __name__ == '__main__':
-    #testDownload("sky")
-    resizeImages("sky")
+    testDownload("tulip")
+    resizeImages("tulip")
     #testLoad(data_name="banana", i=1)
