@@ -71,7 +71,7 @@ For a local copy, please use the following doxygen command from *doxygen* direct
 
 ## Future tasks
 
-* [ ] Support batch usage via docutil.
+* [ ] Implement background removal.
 
 ## License
 
