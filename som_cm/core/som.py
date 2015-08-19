@@ -26,6 +26,7 @@ def resultDir():
     result_dir = os.path.abspath(os.path.join(_root_dir, "../../results"))
     if not os.path.exists(result_dir):
         os.makedirs(result_dir)
+    return result_dir
 
 ## SOM parameter.
 class SOMParam:
