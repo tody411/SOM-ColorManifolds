@@ -14,6 +14,7 @@ import cv2
 from som_cm.np.norm import normVectors
 from som_cm.datasets.google_image import loadData
 from som_cm.cv.image import to32F
+from som_cm.core.color_samples import Hist3D
 
 
 ## SOM parameter.
@@ -21,7 +22,7 @@ class SOMParam:
     #  @param h       image grid size.
     #  @param L0      initial parameter for learning restraint.
     #  @param lmbd    iteration limit.
-    def __init__(self, h=32, L0=0.06, lmbd=0.5, sigma0=0.3):
+    def __init__(self, h=32, L0=0.1, lmbd=0.6, sigma0=0.3):
         self.h = h
         self.L0 = L0
         self.lmbd = lmbd
@@ -147,7 +148,7 @@ class SOMPlot:
 
         else:
             if self._som.finished():
-                self._step_text.set_text('finished')
+                self._step_text.set_text('')
             else:
                 self._step_text.set_text('step: %s' % self._som.currentStep())
 
@@ -164,35 +165,28 @@ class SOMPlot:
 
 if __name__ == '__main__':
     np.random.seed(100)
-    num_samples = 2000
+    num_samples = 1000
     #samples = np.random.rand(num_samples, 3)
 
-    C_8U = loadData(data_name="banana", i=3)
+    C_8U = loadData(data_name="sky", i=0)
     C_32F = to32F(C_8U)
-    print C_8U.shape
-
-    C = C_32F.reshape(-1, 3)
-    print np.max(C)
 
     fig = plt.figure()
     plt.subplot(131)
     plt.imshow(C_8U)
 
-    br_dist = normVectors(C-np.array([1.0, 1.0, 1.0]))
-    C = C[br_dist > 0.05]
+    hist3D = Hist3D(C_32F)
+    color_samples = hist3D.colorSamples()
 
-    dr_dist = normVectors(C-np.array([0, 0, 0]))
-    #C = C[dr_dist > 0.1]
+    random_ids = np.random.randint(len(color_samples) - 1, size=num_samples)
 
-    random_ids = np.random.randint(len(C) - 1, size=num_samples)
-
-    samples = C[random_ids]
+    samples = color_samples[random_ids]
     samples_sparse = samples[::len(samples) / 64]
     print samples_sparse.shape
     samples_image = np.zeros((64, 20, 3))
 
     for ri in range(20):
-        samples_image[:,ri,:] = samples_sparse[:64,:]
+        samples_image[:, ri, :] = samples_sparse[:64, :]
 
     plt.subplot(132)
     plt.imshow(samples_image)

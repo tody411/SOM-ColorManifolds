@@ -11,9 +11,10 @@ import json
 import os
 import urllib2
 
+import cv2
 import matplotlib.pyplot as plt
 
-from som_cm.io.image import loadRGBA, loadRGB
+from som_cm.io.image import loadRGBA, loadRGB, saveRGB
 
 _root_dir = os.path.dirname(__file__)
 
@@ -39,7 +40,7 @@ def loadData(data_name, i):
         return None
 
     data_file = data_files[i]
-    print data_file
+
     return loadRGB(data_file)
 
 
@@ -75,6 +76,25 @@ def downloadImages(data_name, num_images):
         except:
             continue
 
+def resizeImages(data_name):
+    data_files = dataFiles(data_name)
+
+    for data_file in dataFiles(data_name):
+        C_8U = loadRGB(data_file)
+        if C_8U is None:
+            os.remove(data_file)
+            continue
+        h, w = C_8U.shape[0:2]
+        print h, w
+        opt_scale = 800.0 / float(h)
+        opt_scale = max(opt_scale, 800.0 / float(w))
+        print opt_scale
+
+        h_opt = int(opt_scale * h)
+        w_opt = int(opt_scale * w)
+
+        C_8U_small = cv2.resize(C_8U, (w_opt, h_opt))
+        saveRGB(data_file, C_8U_small)
 
 def testLoad(data_name="banana", i=0):
     C_8U = loadData(data_name, i)
@@ -86,5 +106,6 @@ def testDownload(keyword="banana", num_images=16):
     downloadImages(keyword, num_images)
 
 if __name__ == '__main__':
-    #testDownload()
-    testLoad(data_name="banana", i=1)
+    #testDownload("sky")
+    resizeImages("sky")
+    #testLoad(data_name="banana", i=1)

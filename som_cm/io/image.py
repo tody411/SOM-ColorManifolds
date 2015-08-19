@@ -17,11 +17,15 @@ def loadGray(file_path):
 
 def loadRGB(file_path):
     bgr = cv2.imread(file_path)
+    if bgr is None:
+        return None
     return bgr2rgb(bgr)
 
 
 def loadRGBA(file_path):
     bgra = cv2.imread(file_path, -1)
+    if bgra is None:
+        return None
     return bgra2rgba(bgra)
 
 
