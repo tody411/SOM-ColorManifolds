@@ -43,7 +43,6 @@ This program also uses **docopt** for CLI.
 **docopt** will be installed automatically through the following **pip** command for main modules.
 
 ### Install main modules
-*Status*: Under construction.
 
 You can use **pip** command for installing main modules.
 Please run the following command from the shell.
