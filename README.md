@@ -58,12 +58,12 @@ Please run the following command from the shell.
 * results: Result images will be saved in the directory.
 
 ### Test SOM Demo
-You can test the SOM with the following command.
+You can test the SOM with the following command from ```som_cm``` directory..
 ``` bash
   > python main.py
 ```
 
-This command will start downloading images via Google Image API then run the SOM module to generate result images.
+This command will start downloading test images via Google Image API then run the SOM module to generate result images.
 
 <!-- ## API Document
 
