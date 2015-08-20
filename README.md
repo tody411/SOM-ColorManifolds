@@ -4,7 +4,15 @@ SOM for Color Manifolds (Python)
 
 Simple python demos of Data-driven Color Manifolds [Nguyen et al. 2015].
 
-They used self-organizing maps (**SOM**) to construct data-driven **color manifolds**.
+They used Self-Organizing Maps (**SOM**) to construct data-driven **color manifolds**.
+
+Overview of their approach:
+
+1. Color samples from image datasets.
+2. Dimensionality reduction via **SOM**.
+3. Applications: color editing, palettes, stylization, etc.
+
+In this demo package, I only implemented **dimensionality reduction part** for a single image.
 
 ## Result
 This program can generate color manifolds for the target images.
