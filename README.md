@@ -55,7 +55,7 @@ Please run the following command from the shell.
 ### Package Structure
 * som_cm: Main package.
     - main.py: Main module for testing.
-* results: Result images will be saved in the directory.
+    - results: Result images will be saved in the directory.
 
 ### Test SOM Demo
 You can test the SOM with the following command from ```som_cm``` directory..
