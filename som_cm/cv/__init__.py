@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-## @package inversetoon.cv
+## @package som_cm.cv
 #
 #  OpenCV modules.
 #  @author      tody

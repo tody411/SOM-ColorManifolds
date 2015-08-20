@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-## @package inversetoon.cv.image
+## @package som_cm.cv.image
 #
 #  OpenCV image functions.
 #  @author      tody
