@@ -69,19 +69,21 @@ class Hist3D:
     def colorIDs(self):
         density_mean = np.mean(self._hist_bins)
         color_ids = np.where(self._hist_bins > density_mean * self._alpha)
-        return np.array(color_ids).T
+        return color_ids
 
     def colorSamples(self):
         color_ids = self.colorIDs()
+        color_ids = np.array(color_ids).T
 
         num_bins = self._num_bins
         c_min, c_max = self._color_ranges
-        color_samples = c_min + (color_ids / (c_max - c_min)) / (num_bins - 1.0)
+        color_samples = c_min + (color_ids * (c_max - c_min)) / (num_bins - 1.0)
         color_samples = np.clip(color_samples, 0.0, 1.0)
         return color_samples
 
     def colorDensities(self):
-        color_densities = np.float32(self._hist_bins[self.colorIDs().T])
+        color_densities = np.float32(self._hist_bins[self.colorIDs()])
+
         density_max = np.max(color_densities)
         color_densities = color_densities / density_max
 
