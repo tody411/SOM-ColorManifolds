@@ -8,11 +8,11 @@ They used self-organizing maps (**SOM**) to construct data-driven **color manifo
 
 ## Result
 This program can generate color manifolds for the target images.
-![apple_0](results/apple_0.png)
-![banana_0](results/banana_0.png)
-![flower_0](results/flower_0.png)
-![tulip_1](results/tulip_1.png)
-![sky_2](results/sky_2.png)
+![apple_0](som_cm/results/apple_0.png)
+![banana_0](som_cm/results/banana_0.png)
+![flower_0](som_cm/results/flower_0.png)
+![tulip_1](som_cm/results/tulip_1.png)
+![sky_2](som_cm/results/sky_2.png)
 
 ## Installation
 
