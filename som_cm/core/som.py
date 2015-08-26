@@ -44,7 +44,7 @@ class SOMParam:
 
 ## Implementation of SOM.
 #
-#  Batch SOM with numpy functions.
+#  SOM with numpy functions.
 #  - Compute nodes as n x 3 vector.
 #  - Avoid the loops for x and y.
 #  - xy coordinates are cached as n x 2 vector.
