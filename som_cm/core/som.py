@@ -5,29 +5,11 @@
 #  @author      tody
 #  @date        2015/08/14
 
-from docopt import docopt
 import os
 import numpy as np
-from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
-import matplotlib.animation as animation
-import cv2
-from som_cm.io_util.image import loadRGB
+
 from som_cm.np.norm import normVectors
-from som_cm.datasets.google_image import loadData, dataFile
-from som_cm.cv.image import to32F
-from som_cm.core.color_samples import Hist3D
-from som_cm.plot.window import showMaximize
-
-_root_dir = os.path.dirname(__file__)
-
-
-## Result directory for SOM results.
-def resultDir():
-    result_dir = os.path.abspath(os.path.join(_root_dir, "../results"))
-    if not os.path.exists(result_dir):
-        os.makedirs(result_dir)
-    return result_dir
 
 
 ## SOM parameter.
@@ -82,17 +64,6 @@ class SOM:
         else:
             return self._nodeImage2D()
 
-    def _nodeImage1D(self):
-        h = 10
-        w = self._h
-        node_image = np.zeros((h, w, 3))
-        for y in range(h):
-            node_image[y, :, :] = self._nodes[:, :]
-        return node_image
-
-    def _nodeImage2D(self):
-        return self._nodes.reshape(self._h, self._h, 3)
-
     ## Return the current time step t.
     def currentStep(self):
         return self._t
@@ -112,6 +83,17 @@ class SOM:
         if self._t < len(self._samples):
             self._train(self._t)
             self._t += 1
+
+    def _nodeImage1D(self):
+        h = 10
+        w = self._h
+        node_image = np.zeros((h, w, 3))
+        for y in range(h):
+            node_image[y, :, :] = self._nodes[:, :]
+        return node_image
+
+    def _nodeImage2D(self):
+        return self._nodes.reshape(self._h, self._h, 3)
 
     ## Initial node.
     def _initialNode(self, h, dimension):
@@ -215,6 +197,7 @@ class SOMPlot:
 
         return self._step_text
 
+    ## Plot color manifold in 3D.
     def plot3D(self, ax):
         node_image = self._som.nodeImage()
         colors = node_image.reshape(-1, 3)
@@ -225,13 +208,13 @@ class SOMPlot:
         ax.set_ylabel('G')
         ax.set_zlabel('B')
 
-        ax.set_zlim3d([0.0, 1.0])
-        ax.set_ylim3d([0.0, 1.0])
-        ax.set_xlim3d([0.0, 1.0])
+        ax.set_zlim3d([-0.1, 1.1])
+        ax.set_ylim3d([-0.1, 1.1])
+        ax.set_xlim3d([-0.1, 1.1])
 
-        ax.set_xticks(np.linspace(0.2, 0.8, 2))
-        ax.set_yticks(np.linspace(0.2, 0.8, 2))
-        ax.set_zticks(np.linspace(0.2, 0.8, 2))
+        ax.set_xticks(np.linspace(0.0, 1.0, 2))
+        ax.set_yticks(np.linspace(0.0, 1.0, 2))
+        ax.set_zticks(np.linspace(0.0, 1.0, 2))
         return plot3d
 
     ## Animation function for FuncAnimation.
@@ -242,102 +225,3 @@ class SOMPlot:
         self._som.trainStep()
 
         return [image, text]
-
-
-def setupSOM(image_file, random_seed=100, num_samples=1000):
-    np.random.seed(random_seed)
-    C_8U = loadRGB(image_file)
-    C_32F = to32F(C_8U)
-
-    hist3D = Hist3D(C_32F)
-    color_samples = hist3D.colorSamples()
-
-    random_ids = np.random.randint(len(color_samples) - 1, size=num_samples)
-    samples = color_samples[random_ids]
-
-    param1D = SOMParam(h=64, dimension=1)
-    som1D = SOM(samples, param1D)
-
-    param2D = SOMParam(h=32, dimension=2)
-    som2D = SOM(samples, param2D)
-    return C_32F, som1D, som2D
-
-
-def runSOMAnimation(image_name, C_32F, som1D, som2D):
-    fig = plt.figure()
-    plt.title("SOM-Color Manifolds")
-    plt.subplot(131)
-    plt.title("%s" % (image_name))
-    plt.imshow(C_32F)
-    plt.axis('off')
-
-    plt.subplot(132)
-    plt.title("SOM 1D")
-    som1D_plot = SOMPlot(som1D)
-    ani1D = animation.FuncAnimation(fig, som1D_plot.trainAnimation, interval=0, blit=True)
-    plt.axis('off')
-
-    plt.subplot(133)
-    plt.title("SOM 2D")
-    som2D_plot = SOMPlot(som2D)
-    ani2D = animation.FuncAnimation(fig, som2D_plot.trainAnimation, interval=0, blit=True)
-    plt.axis('off')
-
-    showMaximize()
-
-
-def runSOMResult(image_name, C_32F, som1D, som2D):
-    fig = plt.figure(figsize=(10, 8))
-    fig.subplots_adjust(left=0.05, bottom=0.05, right=0.95, top=0.95, wspace=0.05, hspace=0.05)
-    plt.title("SOM-Color Manifolds")
-    plt.subplot(231)
-    plt.title("%s" % (image_name))
-    plt.imshow(C_32F)
-    plt.axis('off')
-
-    print "  - Train 1D"
-    som1D.trainAll()
-
-    print "  - Train 2D"
-    som2D.trainAll()
-
-    som1D_plot = SOMPlot(som1D)
-    som2D_plot = SOMPlot(som2D)
-    plt.subplot(232)
-    plt.title("SOM 1D")
-    som1D_plot.updateImage()
-    plt.axis('off')
-
-    plt.subplot(233)
-    plt.title("SOM 2D")
-    som2D_plot.updateImage()
-    plt.axis('off')
-
-    ax1D = fig.add_subplot(235, projection='3d')
-    plt.title("1D in 3D")
-    som1D_plot.plot3D(ax1D)
-
-    ax2D = fig.add_subplot(236, projection='3d')
-    plt.title("2D in 3D")
-    som2D_plot.plot3D(ax2D)
-
-    plt.savefig(os.path.join(resultDir(), image_name + ".png"))
-    #showMaximize()
-
-
-def runSOMResults(data_names, data_ids):
-    for data_name in data_names:
-        print "SOM: %s" % data_name
-        for data_id in data_ids:
-            print "Data ID: %s" % data_id
-            image_file = dataFile(data_name, data_id)
-            image_name = os.path.basename(image_file)
-            image_name = os.path.splitext(image_name)[0]
-            C_32F, som1D, som2D = setupSOM(image_file)
-            runSOMResult(image_name, C_32F, som1D, som2D)
-
-if __name__ == '__main__':
-    data_names = ["apple", "banana", "tulip", "sky", "flower"]
-    data_ids = [0, 1, 2]
-
-    runSOMResults(data_names, data_ids)

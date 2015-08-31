@@ -17,6 +17,7 @@ from som_cm.plot.window import showMaximize
 from som_cm.results.results import batchResults
 
 
+## Compute SOM in 1D and 2D for the target image.
 def setupSOM(image, random_seed=100, num_samples=1000):
     np.random.seed(random_seed)
 
@@ -34,14 +35,18 @@ def setupSOM(image, random_seed=100, num_samples=1000):
     return som1D, som2D
 
 
+## Compute SOM selection result for the image file.
+#
+#  Note:
+#  Current implementation causes a problem of Tkinter when destroy the figure canvas.
 def animationResult(image_file):
     try:
         animationResultImp(image_file)
     except:
-        print "tk Loop error"
+        print "Catch Tkinter Exception"
 
 
-## Compute palette selection result for the image file.
+## Compute SOM selection result for the image file.
 def animationResultImp(image_file):
     image_name = os.path.basename(image_file)
     image_name = os.path.splitext(image_name)[0]
