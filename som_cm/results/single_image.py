@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 ## @package som_cm.results.som_single_image
 #
-#  som_cm.results.som_single_image utility package.
+#  Demo for single image.
 #  @author      tody
 #  @date        2015/08/31
 
 import os
 import numpy as np
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 
 from som_cm.io_util.image import loadRGB
 from som_cm.results.results import batchResults, resultFile
@@ -16,6 +17,7 @@ from som_cm.core.som import SOMParam, SOM, SOMPlot
 from som_cm.plot.window import showMaximize
 
 
+## Compute SOM in 1D and 2D for the target image.
 def setupSOM(image, random_seed=100, num_samples=1000):
     np.random.seed(random_seed)
 
@@ -33,7 +35,7 @@ def setupSOM(image, random_seed=100, num_samples=1000):
     return som1D, som2D
 
 
-## Compute palette selection result for the image file.
+## Compute SOM result for the image file.
 def singleImageResult(image_file):
     image_name = os.path.basename(image_file)
     image_name = os.path.splitext(image_name)[0]
