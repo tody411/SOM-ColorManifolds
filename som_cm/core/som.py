@@ -29,6 +29,7 @@ def resultDir():
         os.makedirs(result_dir)
     return result_dir
 
+
 ## SOM parameter.
 class SOMParam:
     #  @param h           image grid size.
@@ -41,6 +42,7 @@ class SOMParam:
         self.lmbd = lmbd
         self.sigma0 = sigma0
         self.dimension = dimension
+
 
 ## Implementation of SOM.
 #

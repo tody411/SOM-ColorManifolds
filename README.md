@@ -16,11 +16,11 @@ In this demo package, I only implemented **dimensionality reduction part** for a
 
 ## Result
 This program can generate color manifolds for the target images.
-![apple_0](som_cm/results/apple_0.png)
-![banana_0](som_cm/results/banana_0.png)
-![flower_0](som_cm/results/flower_0.png)
-![tulip_1](som_cm/results/tulip_1.png)
-![sky_2](som_cm/results/sky_2.png)
+![apple_0](som_cm/results/apple_0_single.png)
+![banana_0](som_cm/results/banana_0_single.png)
+![flower_0](som_cm/results/flower_0_single.png)
+![tulip_1](som_cm/results/tulip_1_single.png)
+![sky_2](som_cm/results/sky_2_single.png)
 
 ## Installation
 
