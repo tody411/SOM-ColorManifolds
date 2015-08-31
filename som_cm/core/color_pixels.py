@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-## @package palette.core.color_pixels
+## @package som_cm.core.color_pixels
 #
 #  Simple color pixel class.
 #
