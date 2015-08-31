@@ -58,3 +58,7 @@ Temporary Items
 som_cm/datasets/*/*
 som_cm/datasets/.cache/*
 som_cm/.cache/*
+
+# Doxygen directory
+doxygen/api_doc/*
+doxygen/*.bat
