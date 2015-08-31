@@ -127,11 +127,11 @@ Please run the following command from the shell.
 ```
 
 ## Usage
-### Run Palette Selection Demo
+### Run SOM Demo
 
 * [```som_cm/main.py```](som_cm/main.py):
 
-You can test the Palette Selection with the following command from ```som_cm``` directory.
+You can test the SOM demo with the following command from ```som_cm``` directory.
 ``` bash
   > python main.py
 ```
