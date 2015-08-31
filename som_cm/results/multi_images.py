@@ -17,7 +17,7 @@ from som_cm.core.som import SOMParam, SOM, SOMPlot
 from som_cm.results.results import resultFile, batchDataGroup
 
 
-## Compute SOM in 1D and 2D for the target image.
+### Setup SOM in 1D and 2D for the target color samples.
 def setupSOM(color_samples, random_seed=100, num_samples=1000):
     np.random.seed(random_seed)
 
@@ -32,7 +32,7 @@ def setupSOM(color_samples, random_seed=100, num_samples=1000):
     return som1D, som2D
 
 
-## Compute palette selection result for the image file.
+## Demo for the given data group.
 def multiImagesResult(data_name, data_ids):
     num_cols = len(data_ids)
     num_rows = 2
@@ -51,7 +51,7 @@ def multiImagesResult(data_name, data_ids):
 
         image = loadRGB(image_file)
 
-        hist3D = Hist3D(image)
+        hist3D = Hist3D(image, num_bins=16)
 
         color_samples.extend(hist3D.colorCoordinates())
 
@@ -83,8 +83,8 @@ def multiImagesResult(data_name, data_ids):
     plt.axis('off')
 
     col_id += 1
-    ax1D = plt.subplot2grid((num_rows, num_cols), (1, col_id), projection='3d', aspect='equal')
-    #ax1D = fig.add_subplot(plot_id, projection='3d')
+    ax1D = plt.subplot2grid((num_rows, num_cols), (1, col_id),
+                            projection='3d', aspect='equal')
     plt.title("1D in 3D", fontsize=font_size)
     som1D_plot.plot3D(ax1D)
 
@@ -95,8 +95,8 @@ def multiImagesResult(data_name, data_ids):
     plt.axis('off')
 
     col_id += 1
-    ax2D = plt.subplot2grid((num_rows, num_cols), (1, col_id), projection='3d', aspect='equal')
-    #ax2D = fig.add_subplot(plot_id, projection='3d')
+    ax2D = plt.subplot2grid((num_rows, num_cols), (1, col_id),
+                            projection='3d', aspect='equal')
     plt.title("2D in 3D", fontsize=font_size)
     som2D_plot.plot3D(ax2D)
 
@@ -106,7 +106,8 @@ def multiImagesResult(data_name, data_ids):
 
 ## Demo for the given data names, ids.
 def multiImagesResults(data_names, data_ids):
-    batchDataGroup(data_names, data_ids, multiImagesResult, "SOM (multi images)")
+    batchDataGroup(data_names, data_ids,
+                   multiImagesResult, "SOM (multi images)")
 
 if __name__ == '__main__':
     data_names = ["apple", "banana", "tulip", "sky", "flower"]

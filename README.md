@@ -12,15 +12,90 @@ Overview of their approach:
 2. Dimensionality reduction via **SOM**.
 3. Applications: color editing, palettes, stylization, etc.
 
-In this demo package, I only implemented **dimensionality reduction part** for a single image.
+In this demo package, I implemented **color sampling part** and **dimensionality reduction part** for observing the color manifolds of image datasets.
 
-## Result
-This program can generate color manifolds for the target images.
-![apple_0](som_cm/results/apple_0_single.png)
-![banana_0](som_cm/results/banana_0_single.png)
-![flower_0](som_cm/results/flower_0_single.png)
-![tulip_1](som_cm/results/tulip_1_single.png)
-![sky_2](som_cm/results/sky_2_single.png)
+* Hist3D class: [```som_cm/core/hist_3d.py```](som_cm/core/hist_3d.py).
+    - Color sampling with 3D color histograms.
+* SOM class: [```som_cm/core/som.py```](som_cm/core/som.py)
+    - **SOM** dimensionality reduction code.
+
+## Examples
+
+### SOM-Color Manifolds for Single Image:
+
+In the following demo, I plotted 1D and 2D color manifolds by changing the ```SOMParam```.
+
+![apple_0_single](som_cm/results/apple_0_single.png)
+![flower_1_single](som_cm/results/flower_1_single.png)
+
+#### Example code:
+
+``` python
+import numpy as np
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+
+from som_cm.io_util.image import loadRGB
+from som_cm.core.hist_3d import Hist3D
+from som_cm.core.som import SOMParam, SOM, SOMPlot
+
+# Load image.
+image = loadRGB(image_file)
+
+# Color samples from 3D color histograms.
+hist3D = Hist3D(image, num_bins=16)
+color_samples = hist3D.colorCoordinates()
+
+# Generate random data samples from color samples.
+random_seed=100
+num_samples=1000
+random_ids = np.random.randint(len(color_samples) - 1, size=num_samples)
+samples = color_samples[random_ids]
+
+# 2D SOM: 32 x 32 map size.
+param2D = SOMParam(h=32, dimension=2)
+som2D = SOM(samples, param2D)
+
+# Compute training process.
+som2D.trainAll()
+
+# SOM plotter.
+som2D_plot = SOMPlot(som2D)
+
+fig = plt.figure()
+
+# Plot image.
+fig.add_subplot(131)
+plt.imshow(image)
+plt.axis('off')
+
+# Plot 2D SOM.
+fig.add_subplot(132)
+som2D_plot.updateImage()
+plt.axis('off')
+
+# Plot 2D SOM result in 3D RGB color space.
+ax = fig.add_subplot(133, projection='3d')
+som2D_plot.plot3D(ax)
+
+plt.show()
+
+```
+Complete example code is available: [```som_cm/results/single_image.py```](som_cm/results/single_image.py)
+
+### Animation demo for Single Image:
+
+Complete example code is available: [```som_cm/results/animation.py```](som_cm/results/animation.py)
+
+### SOM-Color Manifolds for Multi-Images:
+
+In the following demo, I plotted 1D and 2D color manifolds for multi-images.
+
+![banana_milti](som_cm/results/banana_multi.png)
+![flower_1_single](som_cm/results/tulip_multi.png)
+![sky_2_single](som_cm/results/sky_multi.png)
+
+Complete example code is available: [```som_cm/results/multi_images.py```](som_cm/results/multi_images.py)
 
 ## Installation
 
@@ -36,7 +111,7 @@ Please install the following required python modules.
 * **matplotlib**
 * **OpenCV**
 
-As these modules are heavily dependent on NumPy modules, please install appropriate packages for your development environment (Python versions, 32-bit or 64bit).
+As these modules are heavily dependent on NumPy modules, please install appropriate packages for your development environment (Python versions, 32-bit or 64-bit).
 For 64-bit Windows, you can download the binaries from [**Unofficial Windows Binaries for Python Extension Packages**](http://www.lfd.uci.edu/~gohlke/pythonlibs/).
 
 <!-- This program also uses **docopt** for CLI.
@@ -52,18 +127,19 @@ Please run the following command from the shell.
 ```
 
 ## Usage
-### Package Structure
-* som_cm: Main package.
-    - main.py: Main module for testing.
-    - results: Result images will be saved in the directory.
+### Run Palette Selection Demo
 
-### Test SOM Demo
-You can test the SOM with the following command from ```som_cm``` directory..
+* [```som_cm/main.py```](som_cm/main.py):
+
+You can test the Palette Selection with the following command from ```som_cm``` directory.
 ``` bash
   > python main.py
 ```
 
-This command will start downloading test images via Google Image API then run the SOM module to generate result images.
+This command will start downloading test images via Google Image API then run the demo module to generate result images.
+
+### Examples Codes
+* [```som_cm/results```](som_cm/results): You can find example codes to generate result images.
 
 <!-- ## API Document
 
@@ -76,9 +152,9 @@ For a local copy, please use the following doxygen command from *doxygen* direct
   > doxygen doxygen_config
 ``` -->
 
-## Future tasks
+<!-- ## Future tasks
 
-* [ ] Implement background removal.
+* [ ] Implement background removal. -->
 
 ## License
 

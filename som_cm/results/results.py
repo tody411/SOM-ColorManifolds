@@ -16,11 +16,16 @@ def resultDir():
     return _root_dir
 
 
+## Result file path for image name and extension.
 def resultFile(image_name, image_ext=".png"):
     result_file = os.path.join(resultDir(), image_name + image_ext)
     return result_file
 
 
+## Batch command for the target data names, ids.
+#
+#  @param batch_func batch_func(image_file) for an image file.
+#  @param batch_name batch command name.
 def batchResults(data_names, data_ids, batch_func, batch_name):
     for data_name in data_names:
         print "%s: %s" % (batch_name, data_name)
@@ -30,6 +35,10 @@ def batchResults(data_names, data_ids, batch_func, batch_name):
             batch_func(image_file)
 
 
+## Batch command for the target data group.
+#
+#  @param batch_func batch_func(data_name, data_ids) for a data group.
+#  @param batch_name batch command name.
 def batchDataGroup(data_names, data_ids, batch_func, batch_name):
     for data_name in data_names:
         print "%s: %s" % (batch_name, data_name)

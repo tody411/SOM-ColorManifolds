@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ## @package som_cm.results.animation
 #
-#  som_cm.results.animation utility package.
+#  Animation demo for single image.
 #  @author      tody
 #  @date        2015/08/31
 
@@ -17,11 +17,11 @@ from som_cm.plot.window import showMaximize
 from som_cm.results.results import batchResults
 
 
-## Compute SOM in 1D and 2D for the target image.
+## Setup SOM in 1D and 2D for the target image.
 def setupSOM(image, random_seed=100, num_samples=1000):
     np.random.seed(random_seed)
 
-    hist3D = Hist3D(image)
+    hist3D = Hist3D(image, num_bins=16)
     color_samples = hist3D.colorCoordinates()
 
     random_ids = np.random.randint(len(color_samples) - 1, size=num_samples)
@@ -35,7 +35,7 @@ def setupSOM(image, random_seed=100, num_samples=1000):
     return som1D, som2D
 
 
-## Compute SOM selection result for the image file.
+## Demo for the single image file.
 #
 #  Note:
 #  Current implementation causes a problem of Tkinter when destroy the figure canvas.
@@ -46,7 +46,7 @@ def animationResult(image_file):
         print "Catch Tkinter Exception"
 
 
-## Compute SOM selection result for the image file.
+## Demo for the single image file.
 def animationResultImp(image_file):
     image_name = os.path.basename(image_file)
     image_name = os.path.splitext(image_name)[0]
@@ -81,7 +81,7 @@ def animationResultImp(image_file):
     showMaximize()
 
 
-## Compute SOM results for the given data names, ids.
+## Demo for the given data names, ids.
 def animationResults(data_names, data_ids):
     batchResults(data_names, data_ids, animationResult, "SOM (single image)")
 

@@ -17,11 +17,11 @@ from som_cm.core.som import SOMParam, SOM, SOMPlot
 from som_cm.plot.window import showMaximize
 
 
-## Compute SOM in 1D and 2D for the target image.
+## Setup SOM in 1D and 2D for the target image.
 def setupSOM(image, random_seed=100, num_samples=1000):
     np.random.seed(random_seed)
 
-    hist3D = Hist3D(image)
+    hist3D = Hist3D(image, num_bins=16)
     color_samples = hist3D.colorCoordinates()
 
     random_ids = np.random.randint(len(color_samples) - 1, size=num_samples)
@@ -35,7 +35,7 @@ def setupSOM(image, random_seed=100, num_samples=1000):
     return som1D, som2D
 
 
-## Compute SOM result for the image file.
+## Demo for the single image file.
 def singleImageResult(image_file):
     image_name = os.path.basename(image_file)
     image_name = os.path.splitext(image_name)[0]
@@ -87,7 +87,7 @@ def singleImageResult(image_file):
     #showMaximize()
 
 
-## Compute SOM results for the given data names, ids.
+## Demo for the given data names, ids.
 def singleImageResults(data_names, data_ids):
     batchResults(data_names, data_ids, singleImageResult, "SOM (single image)")
 
